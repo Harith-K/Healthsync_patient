@@ -1,0 +1,54 @@
+-- Step 1: Calculate mentions for each team in HOMEDESCRIPTION and VISITORDESCRIPTION
+WITH team_mentions AS (
+    SELECT 
+        GAME_ID,
+        PLAYER1_TEAM_CITY AS TEAM,
+        SUM(CASE WHEN HOMEDESCRIPTION IS NOT NULL THEN 1 ELSE 0 END) AS home_mentions,
+        SUM(CASE WHEN VISITORDESCRIPTION IS NOT NULL THEN 1 ELSE 0 END) AS visitor_mentions
+    FROM 
+        nba_dataset
+    WHERE 
+        PLAYER1_TEAM_CITY IS NOT NULL
+    GROUP BY 
+        GAME_ID, PLAYER1_TEAM_CITY
+),
+
+-- Step 2: Identify the team with maximum mentions in HOMEDESCRIPTION as home team
+home_team_selection AS (
+    SELECT 
+        GAME_ID,
+        TEAM AS home_team,
+        RANK() OVER (PARTITION BY GAME_ID ORDER BY home_mentions DESC) AS rank_home
+    FROM 
+        team_mentions
+    WHERE 
+        home_mentions > 0
+),
+
+-- Step 3: Identify the team with maximum mentions in VISITORDESCRIPTION as visitor team
+visitor_team_selection AS (
+    SELECT 
+        GAME_ID,
+        TEAM AS visitor_team,
+        RANK() OVER (PARTITION BY GAME_ID ORDER BY visitor_mentions DESC) AS rank_visitor
+    FROM 
+        team_mentions
+    WHERE 
+        visitor_mentions > 0
+)
+
+-- Step 4: Combine home and visitor teams for each game
+SELECT 
+    hts.GAME_ID AS game_id,
+    hts.home_team,
+    vts.visitor_team
+FROM 
+    home_team_selection hts
+JOIN 
+    visitor_team_selection vts
+ON 
+    hts.GAME_ID = vts.GAME_ID
+WHERE 
+    hts.rank_home = 1 AND vts.rank_visitor = 1 AND hts.home_team != vts.visitor_team
+ORDER BY 
+    hts.GAME_ID;
