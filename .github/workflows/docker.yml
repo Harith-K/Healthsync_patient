@@ -23,8 +23,8 @@ jobs:
 
     # Step 3: Build the Docker image
     - name: Build Docker image
-      run: docker build -t <your-dockerhub-username>/patient-service:latest .
+      run: docker build -t harith1673/patient-service:latest .
 
     # Step 4: Push the Docker image to DockerHub
     - name: Push Docker image
-      run: docker push <your-dockerhub-username>/patient-service:latest
+      run: docker push harith1673/patient-service:latest
