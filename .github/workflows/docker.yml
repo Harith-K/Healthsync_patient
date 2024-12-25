@@ -21,9 +21,11 @@ jobs:
         username: ${{ secrets.DOCKER_USERNAME}}
         password: ${{ secrets.DOCKER_PASSWORD}}
 
-    # Step 3: Build the Docker image
-    - name: Build Docker image
-      run: docker build -t harithchin1673/patient-service:latest .
+    # Step 3: Build the Docker image and apply migrations
+    - name: Build Docker image with migrations
+      run: |
+        docker build -t harithchin1673/patient-service:latest .
+        docker run --rm harithchin1673/patient-service:latest python manage.py migrate
 
     # Step 4: Push the Docker image to DockerHub
     - name: Push Docker image
