@@ -19,5 +19,14 @@ COPY . /app/
 # Expose the port the application will run on
 EXPOSE 8000
 
+# Copy the entrypoint script into the container
+COPY entrypoint.sh /entrypoint.sh
+
+# Make the script executable
+RUN chmod +x /entrypoint.sh
+
+# Use the entrypoint script
+ENTRYPOINT ["/entrypoint.sh"]
+
 # Command to run the Django development server
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
