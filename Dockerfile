@@ -4,9 +4,9 @@ FROM python:3.12.1-slim
 # Set the working directory inside the container
 WORKDIR /app
 
-# Install SQLite and any other necessary system dependencies
+# Install MySQL client and other necessary system dependencies
 RUN apt-get update && apt-get install -y \
-    sqlite3 \
+    default-mysql-client \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy the requirements file and install Python dependencies

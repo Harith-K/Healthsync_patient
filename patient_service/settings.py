@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -77,8 +78,12 @@ WSGI_APPLICATION = 'patient_service.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'healthsync',
+        'USER': 'admin',
+        'PASSWORD': 'Harith1673',
+        'HOST': 'healthsync-db.c1c4ousc21sc.us-east-1.rds.amazonaws.com',
+        'PORT': '3306'
     }
 }
 
