@@ -5,8 +5,11 @@ FROM python:3.12.1-slim
 WORKDIR /app
 
 # Install MySQL client and other necessary system dependencies
+# Install necessary system dependencies
 RUN apt-get update && apt-get install -y \
-    default-mysql-client \
+    pkg-config \
+    default-libmysqlclient-dev \
+    gcc \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy the requirements file and install Python dependencies
