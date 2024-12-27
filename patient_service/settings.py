@@ -79,11 +79,11 @@ WSGI_APPLICATION = 'patient_service.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'healthsync',
-        'USER': 'admin',
-        'PASSWORD': 'Harith1673',
-        'HOST': 'healthsync-db.c1c4ousc21sc.us-east-1.rds.amazonaws.com',
-        'PORT': '3306'
+        'NAME': os.getenv('MYSQL_DATABASE', 'default_db'),  # Fallback to 'default_db'
+        'USER': os.getenv('MYSQL_USER', 'root'),  # Fallback to 'root'
+        'PASSWORD': os.getenv('MYSQL_PASSWORD', ''),  # Fallback to an empty string
+        'HOST': os.getenv('MYSQL_HOST', 'localhost'),  # Fallback to 'localhost'
+        'PORT': os.getenv('MYSQL_PORT', '3306'),  # Fallback to '3306'
     }
 }
 

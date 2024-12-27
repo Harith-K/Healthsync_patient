@@ -28,7 +28,7 @@ jobs:
     # Step 4: Wait for AWS RDS MySQL (or your MySQL DB) to be ready
     - name: Wait for MySQL
       env:
-        DB_HOST: ${{ secrets.MYSQL_HOST }}  # Add this secret if you use an RDS instance
+        DB_HOST: ${{ secrets.MYSQL_HOST }}
         DB_PORT: 3306
         DB_USER: ${{ secrets.MYSQL_USER }}
         DB_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
@@ -41,21 +41,21 @@ jobs:
     # Step 5: Apply database migrations
     - name: Apply migrations
       env:
-        DB_HOST: ${{ secrets.MYSQL_HOST }}
-        DB_PORT: 3306
-        DB_NAME: ${{ secrets.MYSQL_DATABASE }}
-        DB_USER: ${{ secrets.MYSQL_USER }}
-        DB_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
+        MYSQL_DATABASE: ${{ secrets.MYSQL_DATABASE }}
+        MYSQL_USER: ${{ secrets.MYSQL_USER }}
+        MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
+        MYSQL_HOST: ${{ secrets.MYSQL_HOST }}
+        MYSQL_PORT: 3306
       run: python manage.py migrate
 
     # Step 6: Run integration tests (optional)
     - name: Run tests
       env:
-        DB_HOST: ${{ secrets.MYSQL_HOST }}
-        DB_PORT: 3306
-        DB_NAME: ${{ secrets.MYSQL_DATABASE }}
-        DB_USER: ${{ secrets.MYSQL_USER }}
-        DB_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
+        MYSQL_DATABASE: ${{ secrets.MYSQL_DATABASE }}
+        MYSQL_USER: ${{ secrets.MYSQL_USER }}
+        MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
+        MYSQL_HOST: ${{ secrets.MYSQL_HOST }}
+        MYSQL_PORT: 3306
       run: python manage.py test
 
     # Step 7: Log in to DockerHub
