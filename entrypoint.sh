@@ -14,3 +14,4 @@ python manage.py migrate
 # Start the server
 echo "Starting the Django server..."
 exec "$@"
+
