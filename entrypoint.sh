@@ -1,31 +1,16 @@
 #!/bin/bash
 
-# Log all environment variables for debugging
-echo "Logging environment variables..."
-env
+# Debug log to see environment variables
+echo "DOCKER_USERNAME: $DOCKER_USERNAME"
+echo "DOCKER_PASSWORD: $DOCKER_PASSWORD"
+echo "MYSQL_DATABASE: $MYSQL_DATABASE"
+echo "MYSQL_USER: $MYSQL_USER"
+echo "MYSQL_PASSWORD: $MYSQL_PASSWORD"
+echo "MYSQL_HOST: $MYSQL_HOST"
 
-# Debugging specific secrets
-echo "DOCKER_USERNAME: $DOCKER_USERNAME, DOCKER_PASSWORD: $DOCKER_PASSWORD"
-echo "MYSQL_DATABASE: $MYSQL_DATABASE, MYSQL_USER: $MYSQL_USER, MYSQL_PASSWORD: $MYSQL_PASSWORD, MYSQL_HOST: $MYSQL_HOST"
-
-# Check if all required secrets are present
-if [ -z "$MYSQL_HOST" ]; then
-  echo "Error: MYSQL_HOST is not set"
-  exit 1
-fi
-
-if [ -z "$MYSQL_DATABASE" ]; then
-  echo "Error: MYSQL_DATABASE is not set"
-  exit 1
-fi
-
-if [ -z "$MYSQL_USER" ]; then
-  echo "Error: MYSQL_USER is not set"
-  exit 1
-fi
-
-if [ -z "$MYSQL_PASSWORD" ]; then
-  echo "Error: MYSQL_PASSWORD is not set"
+# Exit if any required variable is missing
+if [ -z "$MYSQL_DATABASE" ] || [ -z "$MYSQL_USER" ] || [ -z "$MYSQL_PASSWORD" ] || [ -z "$MYSQL_HOST" ]; then
+  echo "Error: One or more required environment variables are missing."
   exit 1
 fi
 

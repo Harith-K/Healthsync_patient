@@ -25,38 +25,26 @@ jobs:
       run: |
         pip install -r requirements.txt
 
-    # Step 4: Wait for AWS RDS MySQL (or your MySQL DB) to be ready
+    # Step 4: Wait for MySQL to be ready
     - name: Wait for MySQL
       env:
-        DB_HOST: ${{ secrets.MYSQL_HOST }}
-        DB_PORT: 3306
-        DB_USER: ${{ secrets.MYSQL_USER }}
-        DB_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
+        MYSQL_HOST: ${{ secrets.MYSQL_HOST }}
+        MYSQL_USER: ${{ secrets.MYSQL_USER }}
+        MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
       run: |
-        until mysqladmin ping -h $DB_HOST -u $DB_USER -p$DB_PASSWORD; do
+        echo "Checking MySQL connection..."
+        until mysqladmin ping -h "$MYSQL_HOST" -u "$MYSQL_USER" -p"$MYSQL_PASSWORD"; do
           echo "Waiting for MySQL to be ready..."
           sleep 5
         done
 
     # Step 5: Apply database migrations
     - name: Apply migrations
-      env:
-        MYSQL_DATABASE: ${{ secrets.MYSQL_DATABASE }}
-        MYSQL_USER: ${{ secrets.MYSQL_USER }}
-        MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
-        MYSQL_HOST: ${{ secrets.MYSQL_HOST }}
-        MYSQL_PORT: 3306
-      run: python manage.py migrate
+      run: docker exec patient-service python manage.py migrate
 
-    # Step 6: Run integration tests (optional)
-    - name: Run tests
-      env:
-        MYSQL_DATABASE: ${{ secrets.MYSQL_DATABASE }}
-        MYSQL_USER: ${{ secrets.MYSQL_USER }}
-        MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
-        MYSQL_HOST: ${{ secrets.MYSQL_HOST }}
-        MYSQL_PORT: 3306
-      run: python manage.py test
+    # Step 6: Debug environment variables inside container
+    - name: Debug container environment variables
+      run: docker exec patient-service env
 
     # Step 7: Log in to DockerHub
     - name: Log in to DockerHub
@@ -73,7 +61,7 @@ jobs:
     - name: Push Docker image
       run: docker push harithchin1673/patient-service:latest
 
-    # Step 9: Run Docker container
+    # Step 10: Run Docker container
     - name: Run Docker container
       run: |
         docker run -d -p 8000:8000 \
