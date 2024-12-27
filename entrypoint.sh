@@ -1,18 +1,8 @@
 #!/bin/bash
 
-# Debug log to see environment variables
-echo "DOCKER_USERNAME: $DOCKER_USERNAME"
-echo "DOCKER_PASSWORD: $DOCKER_PASSWORD"
-echo "MYSQL_DATABASE: $MYSQL_DATABASE"
-echo "MYSQL_USER: $MYSQL_USER"
-echo "MYSQL_PASSWORD: $MYSQL_PASSWORD"
-echo "MYSQL_HOST: $MYSQL_HOST"
-
-# Exit if any required variable is missing
-if [ -z "$MYSQL_DATABASE" ] || [ -z "$MYSQL_USER" ] || [ -z "$MYSQL_PASSWORD" ] || [ -z "$MYSQL_HOST" ]; then
-  echo "Error: One or more required environment variables are missing."
-  exit 1
-fi
+# Debugging - Print environment variables for verification
+echo "Loaded Environment Variables:"
+env
 
 # Wait for the database to be ready
 echo "Waiting for database to be ready..."
@@ -25,6 +15,6 @@ echo "Database is ready!"
 echo "Applying database migrations..."
 python manage.py migrate
 
-# Start the server
+# Start the Django server
 echo "Starting the Django server..."
 exec "$@"
