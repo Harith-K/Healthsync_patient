@@ -9,22 +9,6 @@ jobs:
   build-and-test:
     runs-on: ubuntu-latest
 
-    services:
-      mysql:
-        image: mysql:8
-        env:
-          MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
-          MYSQL_DATABASE: ${{ secrets.MYSQL_DATABASE }}
-          MYSQL_USER: ${{ secrets.MYSQL_USER }}
-          MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
-        ports:
-          - 3306:3306
-        options: >-
-          --health-cmd="mysqladmin ping -h localhost -u ${{ secrets.MYSQL_USER }} -p${{ secrets.MYSQL_PASSWORD }}"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=5
-
     steps:
     # Step 1: Check out the code
     - name: Checkout code
@@ -41,10 +25,15 @@ jobs:
       run: |
         pip install -r requirements.txt
 
-    # Step 4: Wait for MySQL to be ready
+    # Step 4: Wait for AWS RDS MySQL (or your MySQL DB) to be ready
     - name: Wait for MySQL
+      env:
+        DB_HOST: ${{ secrets.MYSQL_HOST }}  # Add this secret if you use an RDS instance
+        DB_PORT: 3306
+        DB_USER: ${{ secrets.MYSQL_USER }}
+        DB_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
       run: |
-        until mysqladmin ping -h localhost -u ${{ secrets.MYSQL_USER }} -p${{ secrets.MYSQL_PASSWORD }}; do
+        until mysqladmin ping -h $DB_HOST -u $DB_USER -p$DB_PASSWORD; do
           echo "Waiting for MySQL to be ready..."
           sleep 5
         done
@@ -52,7 +41,7 @@ jobs:
     # Step 5: Apply database migrations
     - name: Apply migrations
       env:
-        DB_HOST: localhost
+        DB_HOST: ${{ secrets.MYSQL_HOST }}
         DB_PORT: 3306
         DB_NAME: ${{ secrets.MYSQL_DATABASE }}
         DB_USER: ${{ secrets.MYSQL_USER }}
@@ -62,7 +51,7 @@ jobs:
     # Step 6: Run integration tests (optional)
     - name: Run tests
       env:
-        DB_HOST: localhost
+        DB_HOST: ${{ secrets.MYSQL_HOST }}
         DB_PORT: 3306
         DB_NAME: ${{ secrets.MYSQL_DATABASE }}
         DB_USER: ${{ secrets.MYSQL_USER }}
@@ -78,8 +67,8 @@ jobs:
 
     # Step 8: Build Docker image
     - name: Build Docker image
-      run: docker build -t your-dockerhub-username/patient-service:latest .
+      run: docker build -t harithchin1673/patient-service:latest .
 
     # Step 9: Push Docker image
     - name: Push Docker image
-      run: docker push your-dockerhub-username/patient-service:latest
+      run: docker push harithchin1673/patient-service:latest
