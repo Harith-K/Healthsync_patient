@@ -83,7 +83,7 @@ DATABASES = {
         'USER': os.getenv('MYSQL_USER', 'root'),  # Fallback to 'root'
         'PASSWORD': os.getenv('MYSQL_PASSWORD', ''),  # Fallback to an empty string
         'HOST': os.getenv('MYSQL_HOST', 'localhost'),  # Fallback to 'localhost'
-        'PORT': os.getenv('MYSQL_PORT', '3306'),  # Fallback to '3306'
+        'PORT': 3306,  # Fallback to '3306'
     }
 }
 
