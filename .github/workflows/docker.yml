@@ -82,4 +82,6 @@ jobs:
           -e MYSQL_USER=${{ secrets.MYSQL_USER }} \
           -e MYSQL_PASSWORD=${{ secrets.MYSQL_PASSWORD }} \
           -e MYSQL_HOST=${{ secrets.MYSQL_HOST }} \
+          -e DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }} \
+          -e DOCKER_PASSWORD=${{ secrets.DOCKER_PASSWORD }} \
           harithchin1673/patient-service:latest
