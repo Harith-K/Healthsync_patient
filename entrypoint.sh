@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo "DB_HOST: $DB_HOST, DB_PORT: $DB_PORT, DB_USER: $DB_USER, DB_PASSWORD: $DB_PASSWORD"
+echo "DB_HOST: $MYSQL_HOST, DB_PORT: $MYSQL_PORT, DB_USER: $MYSQL_USER, DB_PASSWORD: $MYSQL_PASSWORD"
 # Wait for the database to be ready
 echo "Waiting for database to be ready..."
 while ! nc -z "$MYSQL_HOST" 3306; do
