@@ -70,20 +70,20 @@ jobs:
     # Step 11: Create or Update EKS Cluster
     - name: Create EKS Cluster with eksctl
       run: |
-        if ! aws eks describe-cluster --name patient-service-cluster --region ${{ secrets.AWS_REGION }}; then
-          echo "Cluster does not exist. Creating EKS cluster..."
-          eksctl create cluster \
-            --name patient-service-cluster \
-            --region ${{ secrets.AWS_REGION }} \
-            --nodegroup-name standard-workers \
-            --node-type t3.medium \
-            --nodes 2 \
-            --nodes-min 1 \
-            --nodes-max 3 \
-            --managed
-        else
-          echo "Cluster already exists. Skipping creation."
-        fi
+          if aws eks describe-cluster --name patient-service-cluster --region ${{ secrets.AWS_REGION }} > /dev/null 2>&1; then
+            echo "Cluster already exists. Skipping creation."
+          else
+            echo "Cluster does not exist. Creating EKS cluster..."
+            eksctl create cluster \
+              --name patient-service-cluster \
+              --region ${{ secrets.AWS_REGION }} \
+              --nodegroup-name standard-workers \
+              --node-type t3.medium \
+              --nodes 2 \
+              --nodes-min 1 \
+              --nodes-max 3 \
+              --managed
+          fi
 
     # Step 12: Update kubeconfig for accessing the EKS cluster
     - name: Update kubeconfig for EKS
